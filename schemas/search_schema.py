@@ -4,6 +4,7 @@ from typing import Optional, List
 from pathlib import Path
 
 from pydantic import BaseModel, Field, UUID4
+from db.models.search_table import Search
 
 
 class Operator(str, Enum):
@@ -29,6 +30,21 @@ class SearchSettings(BaseModel):
     file_mask: Optional[str] = Field(None, description="File name mask in glob format")
     size: Optional[Size] = Field(None, description="Size constraints")
     creation_time: Optional[Time] = Field(None, description="Creation time constraints")
+    
+    @classmethod
+    def from_orm(cls, record: Search):
+        return cls(**{
+            "text": record.text,
+            "file_mask": record.file_mask,
+            "size": {
+                "value": record.size_value, 
+                "operator": record.size_operator
+            },
+            "creation_time": {
+                "value": record.creation_time_value, 
+                "operator": record.creation_time_operator
+            }
+        })
 
     class Config:
         schema_extra = {

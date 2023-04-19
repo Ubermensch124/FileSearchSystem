@@ -1,0 +1,3 @@
+.venv
+.git
+.mypy_cache
