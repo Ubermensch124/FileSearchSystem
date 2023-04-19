@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from sqlalchemy.orm import Session
 from pydantic import UUID4
 
@@ -7,6 +9,7 @@ from db.models.search_table import Search
 
 def add_search_to_db(search_config: SearchSettings, session: Session):
     new_search_settings = Search(
+        search_id=str(uuid4()),
         text=search_config.text,
         file_mask=search_config.file_mask,
         size_value=search_config.size.value,

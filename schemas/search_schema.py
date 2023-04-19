@@ -26,7 +26,7 @@ class Time(BaseModel):
 
 
 class SearchSettings(BaseModel):
-    text: Optional[str] = Field(None, description="Text to search in files (only UTF-8)")
+    text: Optional[str] = Field(None, description="Text to search in files")
     file_mask: Optional[str] = Field(None, description="File name mask in glob format")
     size: Optional[Size] = Field(None, description="Size constraints")
     creation_time: Optional[Time] = Field(None, description="Creation time constraints")

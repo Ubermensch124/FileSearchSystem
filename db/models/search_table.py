@@ -1,5 +1,3 @@
-import uuid
-
 from sqlalchemy import Column, Integer, String, DateTime
 
 from db.connection import Base
@@ -8,7 +6,7 @@ from db.connection import Base
 class Search(Base):
     __tablename__ = "search_settings"
     
-    search_id = Column(String, primary_key=True, default=str(uuid.uuid4()))
+    search_id = Column(String, primary_key=True)
     text = Column(String, nullable=True)
     file_mask = Column(String, nullable=True)
     size_value = Column(Integer, nullable=True)
