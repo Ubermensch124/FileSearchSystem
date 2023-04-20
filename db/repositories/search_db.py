@@ -26,5 +26,7 @@ def add_search_to_db(search_config: SearchSettings, session: Session):
 
 
 def get_search_from_db(search_id: UUID4, session: Session):
-    search_settings = session.query(Search).filter(Search.search_id == str(search_id)).one()
+    search_settings = session.query(Search).filter(Search.search_id == str(search_id)).first()
+    if search_settings is None:
+        return None
     return search_settings

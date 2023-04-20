@@ -49,14 +49,14 @@ class SearchSettings(BaseModel):
     class Config:
         schema_extra = {
             "example": {
-                "text": "hello world",
-                "file_mask": "*a*.???",
+                "text": "abra",
+                "file_mask": "*.*",
                 "size": {
-                    "value": 42000,
-                    "operator": "gt"
+                    "value": 42000000,
+                    "operator": "le"
                 },
                 "creation_time": {
-                    "value": "2023-04-18T20:22:00Z",
+                    "value": "2023-04-25T20:22:00Z",
                     "operator": "le"
                 }
             }
