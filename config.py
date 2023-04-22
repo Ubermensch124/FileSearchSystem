@@ -1,5 +1,6 @@
 import os
 import inspect
+from pathlib import Path
 
 from dotenv import load_dotenv
 
@@ -14,13 +15,16 @@ class Settings:
     PROJECT_OPENAPI_URL: str = "/api/openapi.json"
     PROJECT_DOCS_URL: str = "/api/docs"
 
-    TARGET_DIRECTORY: str = os.getenv("TARGET_DIRECTORY", "/")
+    DEPLOY: str = os.getenv("DEPLOY", "False")
+    TARGET_DIRECTORY: str = os.getenv("TARGET_DIRECTORY", "/") if DEPLOY == "True" else str(Path(__file__).resolve().parent / "test_dir") 
     
     POSTGRES_USER: str = os.getenv("POSTGRES_USER", "postgres")
     POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "postgres")
     POSTGRES_HOST: str = os.getenv("POSTGRES_HOST", "localhost")
     POSTGRES_PORT: str = os.getenv("POSTGRES_PORT", "5432")
     POSTGRES_DB: str = os.getenv("POSTGRES_DB")
+    
+    POSTGRES_TEST_DB: str = os.getenv("POSTGRES_TEST_DB", "test_search_db")
 
     @property
     def project_settings(self) -> dict:

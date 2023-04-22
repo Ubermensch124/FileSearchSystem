@@ -5,6 +5,8 @@ from zipfile import ZipFile
 import os
 import re
 
+from utils.compare import compare_dict
+
 
 def get_archives(folder: Path) -> List[str]:
     """ Get all paths to zip-archives without sub-archives """
@@ -19,23 +21,6 @@ def get_archives(folder: Path) -> List[str]:
 
 def get_files_from_archive(archive: str, file_mask: str, size_value: int, size_operator: str, creation_time_value: datetime, creation_time_operator: str) -> List[str]:
     """ Get zip-archive and check every file to conditions """
-    size_compare = {
-        "eq": lambda item_size: item_size == size_value,
-        "gt": lambda item_size: item_size > size_value,
-        "lt": lambda item_size: item_size < size_value,
-        "ge": lambda item_size: item_size >= size_value,
-        "le": lambda item_size: item_size <= size_value,
-	}
-
-    time_compare = {
-        "eq": lambda item_creation_time: item_creation_time == creation_time_value,
-        "gt": lambda item_creation_time: item_creation_time > creation_time_value,
-        "lt": lambda item_creation_time: item_creation_time < creation_time_value,
-        "ge": lambda item_creation_time: item_creation_time >= creation_time_value,
-        "le": lambda item_creation_time: item_creation_time <= creation_time_value,
-    }
-
-
     regex_pattern = file_mask.replace(".", r"\.").replace("*", r".*")
 
     paths = []
@@ -45,8 +30,8 @@ def get_files_from_archive(archive: str, file_mask: str, size_value: int, size_o
                 not path.endswith("/"),
                 not path.endswith(".zip"),
                 re.match(regex_pattern, path.split("/")[-1]),
-                size_compare[size_operator](arc.getinfo(path).file_size),
-                time_compare[creation_time_operator](datetime(*arc.getinfo(path).date_time)),
+                compare_dict[size_operator](arc.getinfo(path).file_size, size_value),
+                compare_dict[creation_time_operator](datetime(*arc.getinfo(path).date_time), creation_time_value),
             )
             if all(conditions):
                 paths.append(path)

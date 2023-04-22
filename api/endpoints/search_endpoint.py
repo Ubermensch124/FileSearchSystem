@@ -16,14 +16,14 @@ redis_store_pending = redis.Redis(host='localhost', port=6379, db=2)
 
 @router.post("/search", response_model=SearchId)
 def search_settings(search_config: SearchSettings, session: Session = Depends(get_session)):
-    """ Save settings for search and return unique ID """
+    """ Save settings for search and return unique SEARCH_ID """
     search_id = add_search_to_db(search_config=search_config, session=session)
     return {"search_id": search_id}
 
 
 @router.get("/searches/{search_id}", response_model=SearchResult, response_model_exclude_none=True)
 def search_result(search_id: UUID4, session: Session = Depends(get_session)):
-    """ Get ID, search settings for this ID and return paths to files """
+    """ Search settings for your SEARCH_ID and return paths to files """    
     task = AsyncResult(str(search_id), app=celery_app)
     if task.status == "SUCCESS":
         redis_store_pending.delete(str(search_id))
@@ -44,3 +44,8 @@ def search_result(search_id: UUID4, session: Session = Depends(get_session)):
         redis_store_pending.set(str(search_id), "True")
 
     return {"finished": False}
+
+
+@router.get("/ping")
+def health_check():
+    return {"Result": "pong"}

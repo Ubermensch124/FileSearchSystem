@@ -6,3 +6,8 @@ psycopg2
 requests
 celery
 flower
+redis
+tika
+pytest
+pytest-env
+httpx
