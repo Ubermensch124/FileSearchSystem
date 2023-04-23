@@ -15,7 +15,7 @@ class Settings:
     PROJECT_OPENAPI_URL: str = "/api/openapi.json"
     PROJECT_DOCS_URL: str = "/api/docs"
 
-    DEPLOY: str = os.getenv("DEPLOY", "False")
+    DEPLOY: str = os.getenv("DEPLOY", "True")
     TARGET_DIRECTORY: str = os.getenv("TARGET_DIRECTORY", "/") if DEPLOY == "True" else str(Path(__file__).resolve().parent / "test_dir") 
     
     POSTGRES_USER: str = os.getenv("POSTGRES_USER", "postgres")

@@ -19,6 +19,9 @@ from tests.data import data_example
 TEST_DIRECTORY = Path(__file__).resolve().parent.parent / "test_dir"
 TEST_DB_URI = f"postgresql://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_HOST}:{settings.POSTGRES_PORT}/{settings.POSTGRES_TEST_DB}"
 
+engine = create_engine(TEST_DB_URI)
+TestSession = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 
 @pytest.fixture(scope="session")
 def data():
@@ -26,7 +29,10 @@ def data():
 
 
 @pytest.fixture(scope="session", autouse=True)
-def create_files():
+def prepare_files_and_db():
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
+    
     os.mkdir(TEST_DIRECTORY)
     file_names = ["test1.txt", "test2.txt"]
     with open(TEST_DIRECTORY / file_names[0], "w+", encoding="utf-8") as file:
@@ -36,12 +42,8 @@ def create_files():
     
     yield
     shutil.rmtree(TEST_DIRECTORY)
-
-
-engine = create_engine(TEST_DB_URI)
-TestSession = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base.metadata.drop_all(bind=engine)
-Base.metadata.create_all(bind=engine)
+    
+    Base.metadata.drop_all(bind=engine)
 
 
 def test_get_session():
