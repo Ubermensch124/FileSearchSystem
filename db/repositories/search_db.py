@@ -8,6 +8,7 @@ from db.models.search_table import Search
 
 
 def add_search_to_db(search_config: SearchSettings, session: Session):
+    """ Add search settings to DB """
     new_search_settings = Search(
         search_id=str(uuid4()),
         text=search_config.text,
@@ -26,6 +27,7 @@ def add_search_to_db(search_config: SearchSettings, session: Session):
 
 
 def get_search_from_db(search_id: UUID4, session: Session):
+    """ Retrieve search settings to DB """
     search_settings = session.query(Search).filter(Search.search_id == str(search_id)).first()
     if search_settings is None:
         return None
