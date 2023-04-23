@@ -11,10 +11,10 @@ from db.repositories.search_db import add_search_to_db, get_search_from_db
 from service.extract_text import check_text_from_files, celery_app
 
 router = APIRouter(tags=["main"], prefix="")
-redis_store_pending = redis.Redis(host='localhost', port=6379, db=2)
+redis_store_pending = redis.Redis("localhost", 6379, db=2)
 
 
-@router.post("/search", response_model=SearchId)
+@router.post("/search", response_model=SearchId, status_code=201)
 def search_settings(search_config: SearchSettings, session: Session = Depends(get_session)):
     """ Save settings for search and return unique SEARCH_ID """
     search_id = add_search_to_db(search_config=search_config, session=session)
@@ -28,7 +28,7 @@ def search_result(search_id: UUID4, session: Session = Depends(get_session)):
     if task.status == "SUCCESS":
         redis_store_pending.delete(str(search_id))
         return task.result
-
+    
     in_redis = redis_store_pending.get(str(search_id))
     if not in_redis or task.status == "FAILURE":
         search_config = get_search_from_db(search_id=search_id, session=session)

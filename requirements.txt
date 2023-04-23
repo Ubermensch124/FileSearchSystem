@@ -2,12 +2,13 @@ fastapi
 uvicorn
 python-dotenv
 sqlalchemy
+sqlalchemy-utils
 psycopg2
-requests
 celery
-flower
 redis
+requests
+httpx
 tika
 pytest
 pytest-env
-httpx
+python-docx

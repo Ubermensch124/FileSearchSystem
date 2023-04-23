@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi import Depends
 import uvicorn
+from sqlalchemy_utils.functions import database_exists, create_database
 
 from config import settings
 from utils.check_path import check_path
@@ -9,6 +10,8 @@ from db.connection import Base, engine
 
 
 def db_init():
+    if not database_exists(engine.url):
+        create_database(engine.url)
     Base.metadata.create_all(engine)
 
 

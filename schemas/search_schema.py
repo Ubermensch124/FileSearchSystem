@@ -3,6 +3,8 @@ from datetime import datetime
 from typing import Optional, List
 from pathlib import Path
 
+from fastapi import Body
+
 from pydantic import BaseModel, Field, UUID4
 from db.models.search_table import Search
 
