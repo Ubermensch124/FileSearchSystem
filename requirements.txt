@@ -7,8 +7,9 @@ psycopg2
 celery
 redis
 requests
-httpx
 tika
+httpx
 pytest
 pytest-env
 python-docx
+xlsxwriter

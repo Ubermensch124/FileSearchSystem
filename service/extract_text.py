@@ -32,7 +32,9 @@ def check_text_from_files(search_settings: str, target_directory: str):
     for path in normal_files:
         path = str(path.absolute())
         parsed = parser.from_file(path)["content"]
-        if parsed is not None and parsed.find(search_string) > -1:
+        if search_string is None or search_string == "":
+            paths.append(path)
+        elif parsed is not None and parsed.find(search_string) > -1:
             paths.append(path)
 
     # просматриваем файлы из zip-архивов первого слоя
@@ -41,7 +43,9 @@ def check_text_from_files(search_settings: str, target_directory: str):
             for path in archive_files:
                 with arc.open(path) as file:
                     parsed = parser.from_file(file)["content"]
-                    if parsed is not None and parsed.find(search_string) > -1:
+                    if search_string is None or search_string == "":
+                        paths.append(archive_path + "\\" + path.replace("/", "\\"))
+                    elif parsed is not None and parsed.find(search_string) > -1:
                         paths.append(archive_path + "\\" + path.replace("/", "\\"))
 
     return {"finished": True, "paths": paths}

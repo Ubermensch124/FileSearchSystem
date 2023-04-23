@@ -11,7 +11,7 @@ load_dotenv()
 class Settings:
     PROJECT_TITLE: str = "KasperskyFileSearchSystem"
     PROJECT_VERSION: str = "0.1.0"
-    PROJECT_DESCRIPTION: str = "A service that provide you possibilities to search files through your local file-system"
+    PROJECT_DESCRIPTION: str = "Service that provide you possibilities to search files through your local file-system"
     PROJECT_OPENAPI_URL: str = "/api/openapi.json"
     PROJECT_DOCS_URL: str = "/api/docs"
 
@@ -22,7 +22,7 @@ class Settings:
     POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "postgres")
     POSTGRES_HOST: str = os.getenv("POSTGRES_HOST", "localhost")
     POSTGRES_PORT: str = os.getenv("POSTGRES_PORT", "5432")
-    POSTGRES_DB: str = os.getenv("POSTGRES_DB")
+    POSTGRES_DB: str = os.getenv("POSTGRES_DB", "search_db")
     
     POSTGRES_TEST_DB: str = os.getenv("POSTGRES_TEST_DB", "test_search_db")
 

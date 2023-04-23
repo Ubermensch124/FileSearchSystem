@@ -14,7 +14,7 @@ def add_search_to_db(search_config: SearchSettings, session: Session):
         file_mask=search_config.file_mask,
         size_value=search_config.size.value,
         size_operator=search_config.size.operator,
-        creation_time_value=search_config.creation_time.value,
+        creation_time_value=search_config.creation_time.value.replace(microsecond=0).isoformat(),
         creation_time_operator=search_config.creation_time.operator,
     )
 

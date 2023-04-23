@@ -6,6 +6,7 @@ import os
 import re
 
 from utils.compare import compare_dict
+from schemas.search_schema import SearchSettings
 
 
 def get_archives(folder: Path) -> List[str]:
@@ -19,9 +20,14 @@ def get_archives(folder: Path) -> List[str]:
     return archives
 
 
-def get_files_from_archive(archive: str, file_mask: str, size_value: int, size_operator: str, creation_time_value: datetime, creation_time_operator: str) -> List[str]:
+def get_files_from_archive(archive: str, search_settings: SearchSettings) -> List[str]:
     """ Get zip-archive and check every file to conditions """
-    regex_pattern = file_mask.replace(".", r"\.").replace("*", r".*")
+    regex_pattern = search_settings.file_mask.replace(".", r"\.").replace("*", r".*")
+    
+    size_operator = search_settings.size.operator
+    size_value = search_settings.size.value
+    creation_time_operator = search_settings.creation_time.operator
+    creation_time_value = search_settings.creation_time.value.isoformat()
 
     paths = []
     with ZipFile(archive, "r") as arc:
@@ -31,7 +37,7 @@ def get_files_from_archive(archive: str, file_mask: str, size_value: int, size_o
                 not path.endswith(".zip"),
                 re.match(regex_pattern, path.split("/")[-1]),
                 compare_dict[size_operator](arc.getinfo(path).file_size, size_value),
-                compare_dict[creation_time_operator](datetime(*arc.getinfo(path).date_time), creation_time_value),
+                compare_dict[creation_time_operator](datetime(*arc.getinfo(path).date_time).replace(microsecond=0).isoformat(), creation_time_value),
             )
             if all(conditions):
                 paths.append(path)
@@ -39,13 +45,11 @@ def get_files_from_archive(archive: str, file_mask: str, size_value: int, size_o
     return paths
 
 
-def get_zip(folder: Path, file_mask, size_value, size_operator, creation_time_value, creation_time_operator) -> dict[str, list[str]]:
+def get_zip(folder: Path, search_settings: SearchSettings) -> dict[str, list[str]]:
     """ Get dictionary {"path_to_archive": [good_file1_in_archive, good_file2_in_archive]} """
     archives = get_archives(folder=folder)
     result = {}
     for archive in archives:
-        result[archive] = get_files_from_archive(
-            archive, file_mask, size_value, size_operator, creation_time_value, creation_time_operator
-		)
+        result[archive] = get_files_from_archive(archive, search_settings)
 
     return result

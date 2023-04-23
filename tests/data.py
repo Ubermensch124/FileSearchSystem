@@ -10,7 +10,7 @@ templates = [
         "operator": "le"
     },
     "creation_time": {
-        "value": str(datetime.now()+timedelta(days=1)),
+        "value": str((datetime.now()+timedelta(days=1)).replace(microsecond=0)),
         "operator": "le"
     }
     },

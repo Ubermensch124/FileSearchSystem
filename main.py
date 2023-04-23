@@ -1,6 +1,5 @@
-from fastapi import FastAPI
-from fastapi import Depends
 import uvicorn
+from fastapi import FastAPI
 from sqlalchemy_utils.functions import database_exists, create_database
 
 from config import settings
@@ -15,8 +14,9 @@ def db_init():
     Base.metadata.create_all(engine)
 
 
-def application(_: None = Depends(db_init)) -> FastAPI:
+def application() -> FastAPI:
     check_path(settings.TARGET_DIRECTORY)
+    db_init()
     app_instance = FastAPI(**settings.project_settings)
     app_instance.include_router(router)
 

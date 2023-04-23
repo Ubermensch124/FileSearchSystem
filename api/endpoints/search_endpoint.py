@@ -28,7 +28,7 @@ def search_result(search_id: UUID4, session: Session = Depends(get_session)):
     if task.status == "SUCCESS":
         redis_store_pending.delete(str(search_id))
         return task.result
-    
+
     in_redis = redis_store_pending.get(str(search_id))
     if not in_redis or task.status == "FAILURE":
         search_config = get_search_from_db(search_id=search_id, session=session)
@@ -37,8 +37,7 @@ def search_result(search_id: UUID4, session: Session = Depends(get_session)):
         search_config = SearchSettings.from_orm(search_config)
 
         task = check_text_from_files.apply_async(
-            args=[search_config.json(),
-            settings.TARGET_DIRECTORY],
+            args=[search_config.json(), settings.TARGET_DIRECTORY],
             task_id=str(search_id),
         )
         redis_store_pending.set(str(search_id), "True")

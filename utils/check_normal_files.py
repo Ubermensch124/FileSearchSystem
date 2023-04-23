@@ -3,6 +3,7 @@ from typing import List
 from datetime import datetime
 
 from utils.compare import compare_dict
+from schemas.search_schema import SearchSettings
 
 
 def check_names_normal(folder: Path, file_mask: str) -> List[Path]:
@@ -31,17 +32,25 @@ def check_creation_time_normal(value: datetime, operator: str, paths: List[Path]
     good_paths = []
 
     for item in paths:
-        creation_time = datetime.fromtimestamp(item.stat().st_ctime)
-        if compare_dict[operator](creation_time, value):
+        creation_time = datetime.fromtimestamp(item.stat().st_ctime).replace(microsecond=0).isoformat()
+        if compare_dict[operator](creation_time, value.isoformat()):
             good_paths.append(item)
 
     return good_paths
 
 
-def get_normal(folder: Path, file_mask, size_value, size_operator, creation_time_value, creation_time_operator) -> List[Path]:
+def get_normal(folder: Path, search_settings: SearchSettings) -> List[Path]:
     """ Get all good files from directories and subdirectories """
-    good_names = check_names_normal(folder, file_mask)
-    good_size = check_size_normal(size_value, size_operator, good_names)
-    good_files = check_creation_time_normal(creation_time_value, creation_time_operator, good_size)
+    good_names = check_names_normal(folder, search_settings.file_mask)
+    good_size = check_size_normal(
+        search_settings.size.value,
+        search_settings.size.operator,
+        good_names
+    )
+    good_files = check_creation_time_normal(
+        search_settings.creation_time.value,
+        search_settings.creation_time.operator,
+        good_size
+    )
 
     return good_files
