@@ -44,8 +44,3 @@ def search_result(search_id: UUID4, session: Session = Depends(get_session)):
         redis_store_pending.set(str(search_id), "True")
 
     return {"finished": False}
-
-
-@router.get("/ping")
-def health_check():
-    return {"Result": "pong"}
